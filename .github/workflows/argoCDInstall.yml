@@ -1,8 +1,6 @@
 name: Install ArgoCD On AKS
 
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 env:
