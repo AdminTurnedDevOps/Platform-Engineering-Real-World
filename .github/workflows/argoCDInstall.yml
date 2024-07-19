@@ -6,7 +6,7 @@ on:
 env:
   RESOURCE_GROUP: "devrelasaservice"
   CLUSTER_NAME: "aksenvironment01"
-  DEPLOYMENT_MANIFEST_PATH: "your-deployment-manifest-path"
+  #DEPLOYMENT_MANIFEST_PATH: "your-deployment-manifest-path"
 
 jobs:
   deploy:
@@ -32,7 +32,7 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      - name: Install KubeVirt
+      - name: Install ArgoCD
         run: |
             helm repo add argo https://argoproj.github.io/argo-helm
             helm install argocd -n argocd argo/argo-cd \
