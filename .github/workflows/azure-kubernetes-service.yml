@@ -1,8 +1,6 @@
 name: Install KubeVirt On AKS
 
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 env:
