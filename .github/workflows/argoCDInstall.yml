@@ -1,0 +1,49 @@
+name: Install ArgoCD On AKS
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP: "devrelasaservice"
+  CLUSTER_NAME: "aksenvironment01"
+  DEPLOYMENT_MANIFEST_PATH: "your-deployment-manifest-path"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Install KubeVirt
+        run: |
+            helm repo add argo https://argoproj.github.io/argo-helm
+            helm install argocd -n argocd argo/argo-cd \
+            --set redis-ha.enabled=true \
+            --set controller.replicas=1 \
+            --set server.autoscaling.enabled=true \
+            --set server.autoscaling.minReplicas=2 \
+            --set repoServer.autoscaling.enabled=true \
+            --set repoServer.autoscaling.minReplicas=2 \
+            --set applicationSet.replicaCount=2 \
+            --set server.service.type=LoadBalancer \
+            --create-namespace
