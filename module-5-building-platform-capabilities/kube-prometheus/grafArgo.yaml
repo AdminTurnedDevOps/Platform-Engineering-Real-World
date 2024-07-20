@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: v61.3.2
+    helm:
+      releaseName: kube-prometheus
+  destination:
+    # If the app is being deployed to a remote Kubernetes cluster, it would look like this:
+    # server: "https://ip_or_loadbalancer_of_control_plane:8443"
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring

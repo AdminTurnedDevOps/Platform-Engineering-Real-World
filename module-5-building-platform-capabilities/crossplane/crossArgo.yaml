@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane
+spec:
+  project: default
+  source:
+    repoURL: https://charts.crossplane.io/stable
+    chart: crossplane
+    targetRevision: v1.16.0
+    helm:
+      releaseName: crossplane
+  destination:
+    # If the app is being deployed to a remote Kubernetes cluster, it would look like this:
+    # server: "https://ip_or_loadbalancer_of_control_plane:8443"
+    server: "https://kubernetes.default.svc"
+    namespace: crossplane-system
